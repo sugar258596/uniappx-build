@@ -6,4 +6,6 @@
     </style>
 
     <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
+
+    <style name="UniAppX.Activity.DefaultTheme" parent="Theme.MyApplication" />
 </resources>

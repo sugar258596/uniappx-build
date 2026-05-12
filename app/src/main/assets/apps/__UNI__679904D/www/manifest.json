@@ -1,0 +1,32 @@
+{
+  "id": "__UNI__679904D",
+  "name": "dom",
+  "description": "",
+  "version": {
+    "name": "1.0.0",
+    "code": "100"
+  },
+  "uni-app-x": {
+    "compilerVersion": "5.07"
+  },
+  "app": {
+    "distribute": {
+      "icons": {
+        "android": {
+          "hdpi": "",
+          "xhdpi": "",
+          "xxhdpi": "",
+          "xxxhdpi": ""
+        }
+      }
+    }
+  },
+  "app-android": {
+    "distribute": {
+      "modules": {
+        "uni-exit": {},
+        "uni-prompt": {}
+      }
+    }
+  }
+}
