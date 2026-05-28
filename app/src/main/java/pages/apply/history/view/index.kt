@@ -31,7 +31,7 @@ open class GenPagesApplyHistoryViewIndex : BasePage {
                 TabItem(key = 1, label = "我看过谁")
             ) as UTSArray<TabItem>
             val list = ref(_uA<GetHaveSeenResult>())
-            val fetchList = fun(isRefresh: Boolean = false): UTSPromise<Unit> {
+            val fetchList = fun(isRefresh: Boolean): UTSPromise<Unit> {
                 return wrapUTSPromise(suspend {
                         try {
                             if (isRefresh) {
@@ -40,13 +40,25 @@ open class GenPagesApplyHistoryViewIndex : BasePage {
                             }
                             val res = await(getHaveSeen(params))
                             if (res != null) {
-                                if (isRefresh) {
-                                    list.value = res.data
+                                val rawData = (res as UTSJSONObject)["data"] as UTSArray<GetHaveSeenResult>?
+                                val rawTotal = (res as UTSJSONObject)["total"] as Number?
+                                val data = if (rawData != null) {
+                                    rawData
                                 } else {
-                                    list.value = list.value.concat(res.data)
+                                    _uA<GetHaveSeenResult>()
                                 }
-                                total.value = res.total
-                                hasMore.value = list.value.length < res.total
+                                val nextTotal = if (rawTotal != null) {
+                                    rawTotal
+                                } else {
+                                    0
+                                }
+                                if (isRefresh) {
+                                    list.value = data
+                                } else {
+                                    list.value = list.value.concat(data)
+                                }
+                                total.value = nextTotal
+                                hasMore.value = list.value.length < nextTotal
                             }
                         }
                          catch (err: Throwable) {
@@ -76,7 +88,7 @@ open class GenPagesApplyHistoryViewIndex : BasePage {
                             return@w1
                         }
                         isLoadingMore.value = true
-                        params.Page++
+                        params.Page = params.Page + 1
                         await(fetchList(false))
                         isLoadingMore.value = false
                 })

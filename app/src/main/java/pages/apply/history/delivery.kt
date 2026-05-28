@@ -23,7 +23,7 @@ open class GenPagesApplyHistoryDelivery : BasePage {
             val _cache = __ins.renderCache
             val asText = fun(value: Any?): String {
                 return if (value != null) {
-                    value
+                    (value as String)
                 } else {
                     ""
                 }
@@ -49,21 +49,34 @@ open class GenPagesApplyHistoryDelivery : BasePage {
                 return datePart.substring(5, 10)
             }
             val parseTags = fun(welfareName: String): UTSArray<String> {
-                return asText(welfareName).split(",").filter(fun(tag): Boolean {
-                    return tag !== ""
+                val source = asText(welfareName)
+                if (source == "") {
+                    return _uA()
                 }
-                ) as UTSArray<String>
+                val parts = source.split(",")
+                val filtered: UTSArray<String> = _uA()
+                run {
+                    var i: Number = 0
+                    while(i < parts.size){
+                        val item = parts[i] as String
+                        if (item != null && item != "") {
+                            filtered.push(item)
+                        }
+                        i++
+                    }
+                }
+                return filtered
             }
             val mapRecord = fun(item: GetDeliveryRecordResult): DeliveryRecord {
                 val areaText = ("" + asText(item.AreaCodeName) + " " + asText(item.HireAddress)).trim()
                 val deliverTime = asText(item.DeliverTime)
-                return DeliveryRecord(id = String(item.Id), jobTitle = asText(item.JobName), salary = asText(item.SalaryName), company = asText(item.HireCompanyName), tags = parseTags(asText(item.HireWelfareName)), areaText = areaText, deliverTime = deliverTime, deliverDate = getDatePart(deliverTime), displayDate = getDisplayDate(deliverTime))
+                return DeliveryRecord(id = item.Id.toString(10), jobTitle = asText(item.JobName), salary = asText(item.SalaryName), company = asText(item.HireCompanyName), tags = parseTags(asText(item.HireWelfareName)), areaText = areaText, deliverTime = deliverTime, deliverDate = getDatePart(deliverTime), displayDate = getDisplayDate(deliverTime))
             }
             val mergeGroups = fun(target: UTSArray<DeliveryGroup>, incoming: UTSArray<DeliveryGroup>){
-                incoming.forEach(fun(group){
+                incoming.forEach(fun(group: DeliveryGroup){
                     val lastGroup = target[target.length - 1]
                     if (lastGroup != null && lastGroup.date === group.date) {
-                        lastGroup.items.push(*group.items.toTypedArray())
+                        lastGroup.items = lastGroup.items.concat(group.items)
                     } else {
                         target.push(DeliveryGroup(date = group.date, items = group.items.slice()))
                     }
@@ -73,7 +86,7 @@ open class GenPagesApplyHistoryDelivery : BasePage {
             val buildGroups = fun(list: UTSArray<DeliveryRecord>): UTSArray<DeliveryGroup> {
                 val result: UTSArray<DeliveryGroup> = _uA()
                 val map = Map<String, UTSArray<DeliveryRecord>>()
-                list.forEach(fun(item){
+                list.forEach(fun(item: DeliveryRecord){
                     val key = if (item.displayDate != "") {
                         item.displayDate
                     } else {
@@ -82,10 +95,13 @@ open class GenPagesApplyHistoryDelivery : BasePage {
                     if (!map.has(key)) {
                         map.set(key, _uA())
                     }
-                    map.get(key)?.push(item)
+                    val items = map.get(key)
+                    if (items != null) {
+                        items.push(item)
+                    }
                 }
                 )
-                map.forEach(fun(items, key){
+                map.forEach(fun(items: UTSArray<DeliveryRecord>, key: String){
                     result.push(DeliveryGroup(date = key, items = items))
                 }
                 )
@@ -101,7 +117,7 @@ open class GenPagesApplyHistoryDelivery : BasePage {
             val isLoading = ref(false)
             val hasMore = ref(true)
             val total = ref(0)
-            val loadData = fun(reset: Boolean = false): UTSPromise<Unit> {
+            val loadData = fun(reset: Boolean): UTSPromise<Unit> {
                 return wrapUTSPromise(suspend w1@{
                         if (isLoading.value) {
                             return@w1
@@ -121,15 +137,30 @@ open class GenPagesApplyHistoryDelivery : BasePage {
                         params.EndTime = filterEndDate.value
                         try {
                             val res = await(getDeliveryRecord(params))
-                            val responseData = res?.data
-                            val responseTotal = res?.total
-                            val records = if (responseData != null) {
-                                responseData.map(fun(item): DeliveryRecord {
-                                    return mapRecord(item)
-                                })
+                            val rawData = if (res != null) {
+                                ((res as UTSJSONObject)["data"] as UTSArray<GetDeliveryRecordResult>?)
                             } else {
-                                _uA()
+                                null
                             }
+                            val rawTotal = if (res != null) {
+                                ((res as UTSJSONObject)["total"] as Number?)
+                            } else {
+                                null
+                            }
+                            val responseData = if (rawData != null) {
+                                rawData
+                            } else {
+                                _uA<GetDeliveryRecordResult>()
+                            }
+                            val responseTotal = if (rawTotal != null) {
+                                rawTotal
+                            } else {
+                                0
+                            }
+                            val records = responseData.map(fun(item: GetDeliveryRecordResult): DeliveryRecord {
+                                return mapRecord(item)
+                            }
+                            )
                             val groupedList = buildGroups(records)
                             if (reset) {
                                 groups.value = groupedList
@@ -138,13 +169,9 @@ open class GenPagesApplyHistoryDelivery : BasePage {
                                 mergeGroups(merged, groupedList)
                                 groups.value = merged
                             }
-                            total.value = if (responseTotal != null) {
-                                responseTotal
-                            } else {
-                                0
-                            }
+                            total.value = responseTotal
                             var currentCount: Number = 0
-                            groups.value.forEach(fun(group){
+                            groups.value.forEach(fun(group: DeliveryGroup){
                                 currentCount += group.items.length
                             }
                             )
@@ -152,7 +179,7 @@ open class GenPagesApplyHistoryDelivery : BasePage {
                         }
                          catch (err: Throwable) {
                             if (!reset) {
-                                params.Page -= 1
+                                params.Page = params.Page - 1
                             }
                             console.error("获取投递记录失败:", err)
                             uni_showToast(ShowToastOptions(title = "加载失败", icon = "none"))

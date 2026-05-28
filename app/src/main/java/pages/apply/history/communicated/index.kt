@@ -31,7 +31,7 @@ open class GenPagesApplyHistoryCommunicatedIndex : BasePage {
                 TabItem(key = 1, label = "我沟通过的")
             ) as UTSArray<TabItem>
             val list = ref(_uA<GetCommunicateListResult>())
-            val fetchList = fun(isRefresh: Boolean = false): UTSPromise<Unit> {
+            val fetchList = fun(isRefresh: Boolean): UTSPromise<Unit> {
                 return wrapUTSPromise(suspend {
                         try {
                             if (isRefresh) {
@@ -40,13 +40,25 @@ open class GenPagesApplyHistoryCommunicatedIndex : BasePage {
                             }
                             val res = await(getCommunicateList(params))
                             if (res != null) {
-                                if (isRefresh) {
-                                    list.value = res.data
+                                val rawData = (res as UTSJSONObject)["data"] as UTSArray<GetCommunicateListResult>?
+                                val rawTotal = (res as UTSJSONObject)["total"] as Number?
+                                val data = if (rawData != null) {
+                                    rawData
                                 } else {
-                                    list.value = list.value.concat(res.data)
+                                    _uA<GetCommunicateListResult>()
                                 }
-                                total.value = res.total
-                                hasMore.value = list.value.length < res.total
+                                val nextTotal = if (rawTotal != null) {
+                                    rawTotal
+                                } else {
+                                    0
+                                }
+                                if (isRefresh) {
+                                    list.value = data
+                                } else {
+                                    list.value = list.value.concat(data)
+                                }
+                                total.value = nextTotal
+                                hasMore.value = list.value.length < nextTotal
                             }
                         }
                          catch (err: Throwable) {
@@ -61,10 +73,22 @@ open class GenPagesApplyHistoryCommunicatedIndex : BasePage {
                 } else {
                     ""
                 }
-                return source.split(",").filter(fun(t): Boolean {
-                    return t !== ""
+                if (source == "") {
+                    return _uA()
                 }
-                ) as UTSArray<String>
+                val parts = source.split(",")
+                val filtered: UTSArray<String> = _uA()
+                run {
+                    var i: Number = 0
+                    while(i < parts.size){
+                        val item = parts[i] as String
+                        if (item != null && item != "") {
+                            filtered.push(item)
+                        }
+                        i++
+                    }
+                }
+                return filtered
             }
             val handleTabChange = fun(_key: Any){
                 params.Type = _key as Number
@@ -83,7 +107,7 @@ open class GenPagesApplyHistoryCommunicatedIndex : BasePage {
                             return@w1
                         }
                         isLoadingMore.value = true
-                        params.Page++
+                        params.Page = params.Page + 1
                         await(fetchList(false))
                         isLoadingMore.value = false
                 })

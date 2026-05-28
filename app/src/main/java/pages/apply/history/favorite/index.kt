@@ -28,18 +28,33 @@ open class GenPagesApplyHistoryFavoriteIndex : BasePage {
             val total = ref(0)
             val params = reactive<GetUserCollectParams>(GetUserCollectParams(Type = 10, Lng = 0, Lat = 0, Page = 1, PageSize = 10))
             val list = ref(_uA<GetUserCollectResult>())
-            val parseTags = fun(welfareName: String?): UTSArray<String> {
-                val source = if (welfareName != null && welfareName != "") {
-                    welfareName
+            val asText = fun(value: Any?): String {
+                return if (value != null) {
+                    (value as String)
                 } else {
                     ""
                 }
-                return source.split(",").filter(fun(t): Boolean {
-                    return t !== ""
-                }
-                ) as UTSArray<String>
             }
-            val fetchList = fun(isRefresh: Boolean = false): UTSPromise<Unit> {
+            val parseTags = fun(welfareName: Any?): UTSArray<String> {
+                val source = asText(welfareName)
+                if (source == "") {
+                    return _uA()
+                }
+                val parts = source.split(",")
+                val filtered: UTSArray<String> = _uA()
+                run {
+                    var i: Number = 0
+                    while(i < parts.length){
+                        val item = parts[i] as String
+                        if (item != null && item != "") {
+                            filtered.push(item)
+                        }
+                        i++
+                    }
+                }
+                return filtered
+            }
+            val fetchList = fun(isRefresh: Boolean): UTSPromise<Unit> {
                 return wrapUTSPromise(suspend {
                         try {
                             if (isRefresh) {
@@ -48,13 +63,25 @@ open class GenPagesApplyHistoryFavoriteIndex : BasePage {
                             }
                             val res = await(getUserCollect(params))
                             if (res != null) {
-                                if (isRefresh) {
-                                    list.value = res.data
+                                val rawData = (res as UTSJSONObject)["data"] as UTSArray<GetUserCollectResult>?
+                                val rawTotal = (res as UTSJSONObject)["total"] as Number?
+                                val data = if (rawData != null) {
+                                    rawData
                                 } else {
-                                    list.value = list.value.concat(res.data)
+                                    _uA<GetUserCollectResult>()
                                 }
-                                total.value = res.total
-                                hasMore.value = list.value.length < res.total
+                                val nextTotal = if (rawTotal != null) {
+                                    rawTotal
+                                } else {
+                                    0
+                                }
+                                if (isRefresh) {
+                                    list.value = data
+                                } else {
+                                    list.value = list.value.concat(data)
+                                }
+                                total.value = nextTotal
+                                hasMore.value = list.value.length < nextTotal
                             }
                         }
                          catch (err: Throwable) {
@@ -80,7 +107,7 @@ open class GenPagesApplyHistoryFavoriteIndex : BasePage {
                             return@w1
                         }
                         isLoadingMore.value = true
-                        params.Page++
+                        params.Page = params.Page + 1
                         await(fetchList(false))
                         isLoadingMore.value = false
                 })
@@ -90,25 +117,31 @@ open class GenPagesApplyHistoryFavoriteIndex : BasePage {
                     uni_navigateTo(NavigateToOptions(url = "/pages/common/job-detail/index?id=" + job.HireJobId!!))
                 }
             }
-            val handleCancelFavorite = fun(job: GetUserCollectResult){
-                uni_showModal(ShowModalOptions(title = "提示", content = "确定要取消收藏该职位吗？", success = fun(res): UTSPromise<Unit> {
-                    return wrapUTSPromise(suspend {
-                            if (res.confirm && job.HireJobId != null) {
-                                try {
-                                    await(deleteFavoritePosition(AddFavoriteParams(Id = job.HireJobId!!, Type = "10")))
-                                    list.value = list.value.filter(fun(item): Boolean {
-                                        return item.Id !== job.Id
-                                    }
-                                    )
-                                    total.value--
-                                    uni_showToast(ShowToastOptions(title = "已取消收藏", icon = "success"))
-                                }
-                                 catch (err: Throwable) {
-                                    console.error("取消收藏失败:", err)
-                                    uni_showToast(ShowToastOptions(title = "取消收藏失败", icon = "none"))
-                                }
+            val confirmCancelFavorite = fun(job: GetUserCollectResult): UTSPromise<Unit> {
+                return wrapUTSPromise(suspend w1@{
+                        if (job.HireJobId == null) {
+                            return@w1
+                        }
+                        try {
+                            await(deleteFavoritePosition(AddFavoriteParams(Id = job.HireJobId as Number, Type = "10")))
+                            list.value = list.value.filter(fun(item): Boolean {
+                                return item.Id !== job.Id
                             }
-                    })
+                            )
+                            total.value = total.value - 1
+                            uni_showToast(ShowToastOptions(title = "已取消收藏", icon = "success"))
+                        }
+                         catch (err: Throwable) {
+                            console.error("取消收藏失败:", err)
+                            uni_showToast(ShowToastOptions(title = "取消收藏失败", icon = "none"))
+                        }
+                })
+            }
+            val handleCancelFavorite = fun(job: GetUserCollectResult){
+                uni_showModal(ShowModalOptions(title = "提示", content = "确定要取消收藏该职位吗？", success = fun(res){
+                    if (res.confirm && job.HireJobId != null) {
+                        confirmCancelFavorite(job)
+                    }
                 }
                 ))
             }

@@ -4382,6 +4382,79 @@ class GetWebConfigurationResultReactiveObject : GetWebConfigurationResult, IUTSR
             _tRS(__v_raw, "GetWeChatPoints", oldValue, value)
         }
 }
+open class GetReportListResult (
+    open var Id: Number? = null,
+    open var NickName: String? = null,
+    open var Avatar: String? = null,
+    open var Addtime: String? = null,
+) : UTSReactiveObject() {
+    override fun __v_create(__v_isReadonly: Boolean, __v_isShallow: Boolean, __v_skip: Boolean): UTSReactiveObject {
+        return GetReportListResultReactiveObject(this, __v_isReadonly, __v_isShallow, __v_skip)
+    }
+}
+class GetReportListResultReactiveObject : GetReportListResult, IUTSReactive<GetReportListResult> {
+    override var __v_raw: GetReportListResult
+    override var __v_isReadonly: Boolean
+    override var __v_isShallow: Boolean
+    override var __v_skip: Boolean
+    constructor(__v_raw: GetReportListResult, __v_isReadonly: Boolean, __v_isShallow: Boolean, __v_skip: Boolean) : super(Id = __v_raw.Id, NickName = __v_raw.NickName, Avatar = __v_raw.Avatar, Addtime = __v_raw.Addtime) {
+        this.__v_raw = __v_raw
+        this.__v_isReadonly = __v_isReadonly
+        this.__v_isShallow = __v_isShallow
+        this.__v_skip = __v_skip
+    }
+    override fun __v_clone(__v_isReadonly: Boolean, __v_isShallow: Boolean, __v_skip: Boolean): GetReportListResultReactiveObject {
+        return GetReportListResultReactiveObject(this.__v_raw, __v_isReadonly, __v_isShallow, __v_skip)
+    }
+    override var Id: Number?
+        get() {
+            return _tRG(__v_raw, "Id", __v_raw.Id, __v_isReadonly, __v_isShallow)
+        }
+        set(value) {
+            if (!__v_canSet("Id")) {
+                return
+            }
+            val oldValue = __v_raw.Id
+            __v_raw.Id = value
+            _tRS(__v_raw, "Id", oldValue, value)
+        }
+    override var NickName: String?
+        get() {
+            return _tRG(__v_raw, "NickName", __v_raw.NickName, __v_isReadonly, __v_isShallow)
+        }
+        set(value) {
+            if (!__v_canSet("NickName")) {
+                return
+            }
+            val oldValue = __v_raw.NickName
+            __v_raw.NickName = value
+            _tRS(__v_raw, "NickName", oldValue, value)
+        }
+    override var Avatar: String?
+        get() {
+            return _tRG(__v_raw, "Avatar", __v_raw.Avatar, __v_isReadonly, __v_isShallow)
+        }
+        set(value) {
+            if (!__v_canSet("Avatar")) {
+                return
+            }
+            val oldValue = __v_raw.Avatar
+            __v_raw.Avatar = value
+            _tRS(__v_raw, "Avatar", oldValue, value)
+        }
+    override var Addtime: String?
+        get() {
+            return _tRG(__v_raw, "Addtime", __v_raw.Addtime, __v_isReadonly, __v_isShallow)
+        }
+        set(value) {
+            if (!__v_canSet("Addtime")) {
+                return
+            }
+            val oldValue = __v_raw.Addtime
+            __v_raw.Addtime = value
+            _tRS(__v_raw, "Addtime", oldValue, value)
+        }
+}
 enum class Api__1(override val value: String) : UTSEnumString {
     GET_REGISTER_PROTOCOL("/api/System/GetUserNotice"),
     GET_PRIVACY_POLICY("/api/System/GetUserAuth"),
@@ -6911,6 +6984,19 @@ class GetUserCollectResultReactiveObject : GetUserCollectResult, IUTSReactive<Ge
             _tRS(__v_raw, "distanceCile", oldValue, value)
         }
 }
+open class EditUserNickNameParams (
+    @JsonNotNull
+    open var UserNick: String,
+) : UTSObject()
+open class EditUserAvatarParams (
+    @JsonNotNull
+    open var Avatar: String,
+) : UTSObject()
+open class EditUserOtherParams (
+    @JsonNotNull
+    open var Sex: Number,
+    open var Birthday: String? = null,
+) : UTSObject()
 open class InviteFriendsResult (
     @JsonNotNull
     open var InviteQRcode: String,
@@ -10600,6 +10686,79 @@ open class AddFavoriteParams (
 open class FavoriteResult (
     open var Success: Boolean? = null,
 ) : UTSObject()
+open class GetBlockListResult (
+    open var Id: Number? = null,
+    open var ScreenId: String? = null,
+    open var ScreenName: String? = null,
+    open var AddTime: String? = null,
+) : UTSReactiveObject() {
+    override fun __v_create(__v_isReadonly: Boolean, __v_isShallow: Boolean, __v_skip: Boolean): UTSReactiveObject {
+        return GetBlockListResultReactiveObject(this, __v_isReadonly, __v_isShallow, __v_skip)
+    }
+}
+class GetBlockListResultReactiveObject : GetBlockListResult, IUTSReactive<GetBlockListResult> {
+    override var __v_raw: GetBlockListResult
+    override var __v_isReadonly: Boolean
+    override var __v_isShallow: Boolean
+    override var __v_skip: Boolean
+    constructor(__v_raw: GetBlockListResult, __v_isReadonly: Boolean, __v_isShallow: Boolean, __v_skip: Boolean) : super(Id = __v_raw.Id, ScreenId = __v_raw.ScreenId, ScreenName = __v_raw.ScreenName, AddTime = __v_raw.AddTime) {
+        this.__v_raw = __v_raw
+        this.__v_isReadonly = __v_isReadonly
+        this.__v_isShallow = __v_isShallow
+        this.__v_skip = __v_skip
+    }
+    override fun __v_clone(__v_isReadonly: Boolean, __v_isShallow: Boolean, __v_skip: Boolean): GetBlockListResultReactiveObject {
+        return GetBlockListResultReactiveObject(this.__v_raw, __v_isReadonly, __v_isShallow, __v_skip)
+    }
+    override var Id: Number?
+        get() {
+            return _tRG(__v_raw, "Id", __v_raw.Id, __v_isReadonly, __v_isShallow)
+        }
+        set(value) {
+            if (!__v_canSet("Id")) {
+                return
+            }
+            val oldValue = __v_raw.Id
+            __v_raw.Id = value
+            _tRS(__v_raw, "Id", oldValue, value)
+        }
+    override var ScreenId: String?
+        get() {
+            return _tRG(__v_raw, "ScreenId", __v_raw.ScreenId, __v_isReadonly, __v_isShallow)
+        }
+        set(value) {
+            if (!__v_canSet("ScreenId")) {
+                return
+            }
+            val oldValue = __v_raw.ScreenId
+            __v_raw.ScreenId = value
+            _tRS(__v_raw, "ScreenId", oldValue, value)
+        }
+    override var ScreenName: String?
+        get() {
+            return _tRG(__v_raw, "ScreenName", __v_raw.ScreenName, __v_isReadonly, __v_isShallow)
+        }
+        set(value) {
+            if (!__v_canSet("ScreenName")) {
+                return
+            }
+            val oldValue = __v_raw.ScreenName
+            __v_raw.ScreenName = value
+            _tRS(__v_raw, "ScreenName", oldValue, value)
+        }
+    override var AddTime: String?
+        get() {
+            return _tRG(__v_raw, "AddTime", __v_raw.AddTime, __v_isReadonly, __v_isShallow)
+        }
+        set(value) {
+            if (!__v_canSet("AddTime")) {
+                return
+            }
+            val oldValue = __v_raw.AddTime
+            __v_raw.AddTime = value
+            _tRS(__v_raw, "AddTime", oldValue, value)
+        }
+}
 open class BuyPinnedParams (
     @JsonNotNull
     open var HireJobId: Number,
@@ -10637,6 +10796,9 @@ fun getGroupQrCode(params: GetGroupQrCodeParams): UTSPromise<String> {
 fun deleteFavoritePosition(params: AddFavoriteParams): UTSPromise<FavoriteResult> {
     return request.post<FavoriteResult>(Api__9.DELETE_FAVORITE_POSITION, params)
 }
+fun getBlockList(params: Pagination): UTSPromise<Any> {
+    return request.post(Api__9.GET_BLOCK_LIST, params, HttpRequestExtraOptions(isTotal = true))
+}
 fun postFreePinned(params: BuyPinnedParams): UTSPromise<Any> {
     return request.post(Api__9.POST_FREE_PINNED, params)
 }
@@ -10645,6 +10807,15 @@ fun salesHireJob(params: SalesHireJobParams): UTSPromise<Any> {
 }
 val getUserCollect = fun(params: GetUserCollectParams): UTSPromise<Any> {
     return request.post(Api__3.GET_USER_COLLECT, params, HttpRequestExtraOptions(isTotal = true))
+}
+val editUserNickName = fun(params: EditUserNickNameParams): UTSPromise<Any> {
+    return request.post(Api__3.EDIT_USER_NICKNAME, params)
+}
+val editUserAvatar = fun(params: EditUserAvatarParams): UTSPromise<Any> {
+    return request.post(Api__3.EDIT_USER_AVATAR, params)
+}
+val editUserOther = fun(params: EditUserOtherParams): UTSPromise<Any> {
+    return request.post(Api__3.EDIT_USER_OTHER, params)
 }
 val updatePrivateProtection = fun(): UTSPromise<Any> {
     return request.post(Api__3.UPDATE_PRIVATE_PROTECTION)
@@ -12351,6 +12522,9 @@ fun deleteProjectExperience(params: DeleteProjectExperienceParams): UTSPromise<A
 }
 fun getResumeList(params: GetResumeListParams): UTSPromise<Any> {
     return request.post<Any>(Api__10.GET_RESUME_LIST, params, HttpRequestExtraOptions(isTotal = true))
+}
+val getReportList = fun(params: Pagination): UTSPromise<Any> {
+    return request.post(Api__1.GET_REPORT_LIST, params, HttpRequestExtraOptions(isTotal = true))
 }
 val getCommunicateList = fun(params: GetCommunicateListParams): UTSPromise<Any> {
     return request.post(Api__2.GET_COMMUNICATE_LIST, params, HttpRequestExtraOptions(isTotal = true))
@@ -18593,6 +18767,68 @@ val GenPagesApplyHistoryFavoriteIndexClass = CreateVueComponent(GenPagesApplyHis
     return GenPagesApplyHistoryFavoriteIndex(instance, renderer)
 }
 )
+open class PrivacyItem (
+    @JsonNotNull
+    open var id: String,
+    @JsonNotNull
+    open var icon: String,
+    @JsonNotNull
+    open var title: String,
+    @JsonNotNull
+    open var desc: String,
+    @JsonNotNull
+    open var iconBg: String,
+) : UTSObject()
+val GenPagesApplyUserPrivacyClass = CreateVueComponent(GenPagesApplyUserPrivacy::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "page", name = "", inheritAttrs = GenPagesApplyUserPrivacy.inheritAttrs, inject = GenPagesApplyUserPrivacy.inject, props = GenPagesApplyUserPrivacy.props, propsNeedCastKeys = GenPagesApplyUserPrivacy.propsNeedCastKeys, emits = GenPagesApplyUserPrivacy.emits, components = GenPagesApplyUserPrivacy.components, styles = GenPagesApplyUserPrivacy.styles, setup = fun(props: ComponentPublicInstance): Any? {
+        return GenPagesApplyUserPrivacy.setup(props as GenPagesApplyUserPrivacy)
+    }
+    )
+}
+, fun(instance, renderer): GenPagesApplyUserPrivacy {
+    return GenPagesApplyUserPrivacy(instance, renderer)
+}
+)
+val GenPagesApplyUserBlockClass = CreateVueComponent(GenPagesApplyUserBlock::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "page", name = "", inheritAttrs = GenPagesApplyUserBlock.inheritAttrs, inject = GenPagesApplyUserBlock.inject, props = GenPagesApplyUserBlock.props, propsNeedCastKeys = GenPagesApplyUserBlock.propsNeedCastKeys, emits = GenPagesApplyUserBlock.emits, components = GenPagesApplyUserBlock.components, styles = GenPagesApplyUserBlock.styles, setup = fun(props: ComponentPublicInstance): Any? {
+        return GenPagesApplyUserBlock.setup(props as GenPagesApplyUserBlock)
+    }
+    )
+}
+, fun(instance, renderer): GenPagesApplyUserBlock {
+    return GenPagesApplyUserBlock(instance, renderer)
+}
+)
+val GenPagesApplyUserReportClass = CreateVueComponent(GenPagesApplyUserReport::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "page", name = "", inheritAttrs = GenPagesApplyUserReport.inheritAttrs, inject = GenPagesApplyUserReport.inject, props = GenPagesApplyUserReport.props, propsNeedCastKeys = GenPagesApplyUserReport.propsNeedCastKeys, emits = GenPagesApplyUserReport.emits, components = GenPagesApplyUserReport.components, styles = GenPagesApplyUserReport.styles, setup = fun(props: ComponentPublicInstance): Any? {
+        return GenPagesApplyUserReport.setup(props as GenPagesApplyUserReport)
+    }
+    )
+}
+, fun(instance, renderer): GenPagesApplyUserReport {
+    return GenPagesApplyUserReport(instance, renderer)
+}
+)
+val GenUniModulesTangUiXComponentsTCellIndexClass = CreateVueComponent(GenUniModulesTangUiXComponentsTCellIndex::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = GenUniModulesTangUiXComponentsTCellIndex.inheritAttrs, inject = GenUniModulesTangUiXComponentsTCellIndex.inject, props = GenUniModulesTangUiXComponentsTCellIndex.props, propsNeedCastKeys = GenUniModulesTangUiXComponentsTCellIndex.propsNeedCastKeys, emits = GenUniModulesTangUiXComponentsTCellIndex.emits, components = GenUniModulesTangUiXComponentsTCellIndex.components, styles = GenUniModulesTangUiXComponentsTCellIndex.styles, setup = fun(props: ComponentPublicInstance): Any? {
+        return GenUniModulesTangUiXComponentsTCellIndex.setup(props as GenUniModulesTangUiXComponentsTCellIndex)
+    }
+    )
+}
+, fun(instance, renderer): GenUniModulesTangUiXComponentsTCellIndex {
+    return GenUniModulesTangUiXComponentsTCellIndex(instance)
+}
+)
+val GenPagesApplyUserProfileClass = CreateVueComponent(GenPagesApplyUserProfile::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "page", name = "", inheritAttrs = GenPagesApplyUserProfile.inheritAttrs, inject = GenPagesApplyUserProfile.inject, props = GenPagesApplyUserProfile.props, propsNeedCastKeys = GenPagesApplyUserProfile.propsNeedCastKeys, emits = GenPagesApplyUserProfile.emits, components = GenPagesApplyUserProfile.components, styles = GenPagesApplyUserProfile.styles, setup = fun(props: ComponentPublicInstance): Any? {
+        return GenPagesApplyUserProfile.setup(props as GenPagesApplyUserProfile)
+    }
+    )
+}
+, fun(instance, renderer): GenPagesApplyUserProfile {
+    return GenPagesApplyUserProfile(instance, renderer)
+}
+)
 fun createApp(): UTSJSONObject {
     val app = createSSRApp(GenAppClass)
     return _uO("app" to app)
@@ -18640,6 +18876,10 @@ fun definePageRoutes() {
     __uniRoutes.push(UniPageRoute(path = "pages/apply/history/communicated/index", component = GenPagesApplyHistoryCommunicatedIndexClass, meta = UniPageMeta(isQuit = false), style = _uM("navigationBarTitleText" to "沟通过", "navigationStyle" to "custom")))
     __uniRoutes.push(UniPageRoute(path = "pages/apply/history/view/index", component = GenPagesApplyHistoryViewIndexClass, meta = UniPageMeta(isQuit = false), style = _uM("navigationBarTitleText" to "查看记录", "navigationStyle" to "custom")))
     __uniRoutes.push(UniPageRoute(path = "pages/apply/history/favorite/index", component = GenPagesApplyHistoryFavoriteIndexClass, meta = UniPageMeta(isQuit = false), style = _uM("navigationBarTitleText" to "收藏职位", "navigationStyle" to "custom")))
+    __uniRoutes.push(UniPageRoute(path = "pages/apply/user/privacy", component = GenPagesApplyUserPrivacyClass, meta = UniPageMeta(isQuit = false), style = _uM("navigationBarTitleText" to "隐私保护", "navigationStyle" to "custom")))
+    __uniRoutes.push(UniPageRoute(path = "pages/apply/user/block", component = GenPagesApplyUserBlockClass, meta = UniPageMeta(isQuit = false), style = _uM("navigationBarTitleText" to "屏蔽公司", "navigationStyle" to "custom")))
+    __uniRoutes.push(UniPageRoute(path = "pages/apply/user/report", component = GenPagesApplyUserReportClass, meta = UniPageMeta(isQuit = false), style = _uM("navigationBarTitleText" to "举报中心", "navigationStyle" to "custom")))
+    __uniRoutes.push(UniPageRoute(path = "pages/apply/user/profile", component = GenPagesApplyUserProfileClass, meta = UniPageMeta(isQuit = false), style = _uM("navigationBarTitleText" to "个人信息", "navigationStyle" to "custom")))
 }
 val __uniTabBar: Map<String, Any?>? = _uM("custom" to true, "color" to "#7A7E83", "selectedColor" to "#3B82F6", "borderStyle" to "black", "backgroundColor" to "#FFFFFF", "list" to _uA(
     _uM("pagePath" to "pages/apply/tabbar/home/index", "text" to "首页"),
